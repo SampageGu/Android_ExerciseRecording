@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">力量训练助手</string>
+
+    <!-- 导航标签 -->
+    <string name="exercises">动作库</string>
+    <string name="training">训练</string>
+    <string name="history">历史</string>
+    <string name="analysis">分析</string>
+
+    <!-- 肌肉群组 -->
+    <string name="chest">胸部</string>
+    <string name="back">背部</string>
+    <string name="legs">腿部</string>
+    <string name="shoulders">肩部</string>
+    <string name="arms">手臂</string>
+    <string name="core">核心</string>
+
+    <!-- 训练相关 -->
+    <string name="weight">重量 (kg)</string>
+    <string name="reps">次数</string>
+    <string name="sets">组数</string>
+    <string name="add_set">添加组</string>
+    <string name="add_exercise">添加动作</string>
+    <string name="save_training">保存训练</string>
+    <string name="new_training">新训练</string>
+    <string name="training_name">训练名称</string>
+    <string name="training_notes">训练笔记</string>
+
+    <!-- 个人记录相关 -->
+    <string name="new_pr">新个人记录!</string>
+    <string name="pr_congratulation">恭喜! 你在%1$s的%2$d次上创造了新的个人记录: %3$.1f kg</string>
+
+    <!-- 分析相关 -->
+    <string name="progress_chart">进步曲线</string>
+    <string name="volume_chart">训练容量趋势</string>
+    <string name="select_exercise">选择动作</string>
+    <string name="last_3_months">过去三个月</string>
+    <string name="last_6_months">过去六个月</string>
+    <string name="last_year">过去一年</string>
+    <string name="weekly">每周</string>
+    <string name="monthly">每月</string>
+
+    <!-- 通用 -->
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="details">详情</string>
+</resources>
