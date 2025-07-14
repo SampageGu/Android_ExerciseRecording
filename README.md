@@ -152,16 +152,9 @@ cd exercise-tracker
 
 
 
-```
 
 
-```
 
-## 📸 应用截图
-
-| 动作库 | 训练记录 | 历史数据 | 数据分析 |
-|--------|----------|----------|----------|
-| ![动作库](photo/exercises.png) | ![训练记录](photo/training.png) | ![历史数据](photo/history.png) | ![数据分析](photo/analysis.png) |
 
 ## 🤝 贡献指南
 
@@ -199,7 +192,7 @@ cd exercise-tracker
 - [Coil](https://coil-kt.github.io/coil/) - 图片加载库
 - [Material Design](https://material.io/) - 设计系统
 
-## 📱 下载��验
+## 📱 下载体验
 
 ### 最新版本
 - **版本**: v1.0.0
@@ -210,11 +203,7 @@ cd exercise-tracker
 - [GitHub Releases](https://github.com/yourusername/exercise-tracker/releases)
 - [Google Play Store](https://play.google.com/store/apps/details?id=com.example.exercise) (即将上线)
 
-## 📞 联系我们
 
-- **开发者**: Your Name
-- **邮箱**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
 
 ---
 
