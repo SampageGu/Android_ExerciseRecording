@@ -150,25 +150,11 @@ cd exercise-tracker
 2. 查看训练进度图表
 3. 查看个人记录统计
 
-## 🔧 自定义配置
 
-### 添加新的动作类型
-```kotlin
-enum class ExerciseType(
-    val displayName: String,
-    val weightIncrement: Float,
-    val weightRange: Pair<Float, Float>
-) {
-    // 在此添加新的动作类型
-    NEW_TYPE("新类型", 1.0f, 10.0f to 200.0f)
-}
+
 ```
 
-### 修改主题颜色
-```kotlin
-// 在 ui/theme/Color.kt 中修改颜色方案
-val Primary = Color(0xFF6750A4)
-val Secondary = Color(0xFF625B71)
+
 ```
 
 ## 📸 应用截图
