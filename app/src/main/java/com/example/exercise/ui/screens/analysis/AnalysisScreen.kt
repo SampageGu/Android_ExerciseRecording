@@ -255,32 +255,39 @@ fun SimpleLineChart(
         ) {
             val width = size.width
             val height = size.height
-            val padding = 20f
+            val leftPadding = 60f    // 增加左边距，为Y轴标签留空间
+            val bottomPadding = 40f  // 增加底边距，为X轴标签留空间
+            val topPadding = 20f     // 顶部边距
+            val rightPadding = 20f   // 右边距
 
-            // 绘制Y轴
+            // 计算图表绘制区域
+            val chartWidth = width - leftPadding - rightPadding
+            val chartHeight = height - topPadding - bottomPadding
+
+            // 绘制Y轴 - 从顶部边距开始，到底部边距结束
             drawLine(
                 color = Color.Gray,
-                start = Offset(padding, 0f),
-                end = Offset(padding, height),
-                strokeWidth = 1f
+                start = Offset(leftPadding, topPadding),
+                end = Offset(leftPadding, height - bottomPadding),
+                strokeWidth = 2f
             )
 
-            // 绘制X轴
+            // 绘制X轴 - 从左边距开始，到右边距结束
             drawLine(
                 color = Color.Gray,
-                start = Offset(padding, height - padding),
-                end = Offset(width, height - padding),
-                strokeWidth = 1f
+                start = Offset(leftPadding, height - bottomPadding),
+                end = Offset(width - rightPadding, height - bottomPadding),
+                strokeWidth = 2f
             )
 
             // 绘制水平辅助线
             val dashPathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
             for (i in 1..4) {
-                val y = height - padding - (i * (height - padding) / 5)
+                val y = topPadding + (i * chartHeight / 5)
                 drawLine(
                     color = Color.LightGray,
-                    start = Offset(padding, y),
-                    end = Offset(width, y),
+                    start = Offset(leftPadding, y),
+                    end = Offset(width - rightPadding, y),
                     strokeWidth = 1f,
                     pathEffect = dashPathEffect
                 )
@@ -288,14 +295,14 @@ fun SimpleLineChart(
 
             // 绘制数据点和线
             if (data.size > 1) {
-                val xStep = (width - padding * 2) / (data.size - 1)
+                val xStep = chartWidth / (data.size - 1)
 
                 for (i in 0 until data.size - 1) {
-                    val x1 = padding + i * xStep
-                    val y1 = height - padding - ((data[i].value - minValue) / dataRange) * (height - padding * 2)
+                    val x1 = leftPadding + i * xStep
+                    val y1 = height - bottomPadding - ((data[i].value - minValue) / dataRange) * chartHeight
 
-                    val x2 = padding + (i + 1) * xStep
-                    val y2 = height - padding - ((data[i + 1].value - minValue) / dataRange) * (height - padding * 2)
+                    val x2 = leftPadding + (i + 1) * xStep
+                    val y2 = height - bottomPadding - ((data[i + 1].value - minValue) / dataRange) * chartHeight
 
                     // 绘制线段
                     drawLine(
@@ -321,8 +328,8 @@ fun SimpleLineChart(
                 }
             } else if (data.size == 1) {
                 // 只有一个数据点的情况
-                val x = width / 2
-                val y = height - padding - ((data[0].value - minValue) / dataRange) * (height - padding * 2)
+                val x = leftPadding + chartWidth / 2
+                val y = height - bottomPadding - ((data[0].value - minValue) / dataRange) * chartHeight
 
                 drawCircle(
                     color = lineColor,
@@ -331,19 +338,18 @@ fun SimpleLineChart(
                 )
             }
 
-            // 绘制日期标签
+            // 绘制垂直辅助线（可选）
             if (data.size > 1) {
-                val format = SimpleDateFormat("MM/dd", Locale.getDefault())
-                val labelCount = minOf(data.size, 5) // 最多显示5个标签
-                val labelInterval = data.size / labelCount
-
-                for (i in 0 until labelCount) {
-                    val index = i * labelInterval
-                    if (index < data.size) {
-                        val x = padding + index * ((width - padding * 2) / (data.size - 1))
-                        val labelText = format.format(data[index].date)
-                        // 绘制日期标签在此省略，因为在Canvas中绘制文本比较复杂
-                    }
+                val xStep = chartWidth / (data.size - 1)
+                for (i in 0 until data.size) {
+                    val x = leftPadding + i * xStep
+                    drawLine(
+                        color = Color.LightGray.copy(alpha = 0.3f),
+                        start = Offset(x, topPadding),
+                        end = Offset(x, height - bottomPadding),
+                        strokeWidth = 1f,
+                        pathEffect = dashPathEffect
+                    )
                 }
             }
         }

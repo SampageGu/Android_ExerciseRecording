@@ -276,15 +276,18 @@ fun ExercisesScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            // 返回按钮移到左上角
+                            TextButton(onClick = { showActionSelectionDialog = false }) {
+                                Text("返回")
+                            }
+
                             Text(
                                 text = "选择操作",
                                 style = MaterialTheme.typography.headlineSmall
                             )
 
-                            // 返回按钮移到右上角
-                            TextButton(onClick = { showActionSelectionDialog = false }) {
-                                Text("返回")
-                            }
+                            // 占位空间，保持布局平衡
+                            Spacer(modifier = Modifier.width(48.dp))
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))

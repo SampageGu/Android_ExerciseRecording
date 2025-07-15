@@ -63,7 +63,7 @@ class ExerciseRepository(
         }
     }
 
-    // 新增：获取训���会话详情（包含训练组数据）
+    // 新增：获取训练会话详情（包含训练组数据）
     suspend fun getSessionWithSets(sessionId: Long): TrainingSessionWithSets? {
         return try {
             trainingSessionDao.getSessionWithSets(sessionId).first()
@@ -98,4 +98,8 @@ class ExerciseRepository(
 
     suspend fun isPersonalRecord(exerciseId: Long, reps: Int, weight: Float): Boolean =
         personalRecordDao.isPersonalRecord(exerciseId, reps, weight)
+
+    // 新增：获取指定动作在时间范围内的所有训练记录（用于分析界面）
+    suspend fun getExerciseSetsByExerciseAndDateRange(exerciseId: Long, startDate: Date, endDate: Date): List<ExerciseSet> =
+        exerciseSetDao.getSetsByExerciseAndDateRange(exerciseId, startDate, endDate)
 }

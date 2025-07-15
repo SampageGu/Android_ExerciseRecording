@@ -149,6 +149,15 @@ interface ExerciseSetDao {
         WHERE exerciseId = :exerciseId
     """)
     suspend fun getAverageRepsForExercise(exerciseId: Long): Int
+
+    // 新增：获取指定动作在时间范围内的所有训练记录（用于分析界面）
+    @Query("""
+        SELECT * FROM exercise_sets 
+        WHERE exerciseId = :exerciseId 
+        AND timestamp BETWEEN :startDate AND :endDate 
+        ORDER BY timestamp ASC
+    """)
+    suspend fun getSetsByExerciseAndDateRange(exerciseId: Long, startDate: Date, endDate: Date): List<ExerciseSet>
 }
 
 @Dao

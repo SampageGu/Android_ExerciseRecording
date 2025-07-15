@@ -140,13 +140,33 @@ class AnalysisViewModel(private val repository: ExerciseRepository) : ViewModel(
         viewModelScope.launch {
             // 获取时间范围的开始日期
             val startDate = getStartDateForTimeRange()
+            val endDate = Date()
 
-            // 从数据库获取真实的训练记录数据，而不是生成模拟数据
+            // 从数据库获取真实的训练记录数据
             val chartPoints = try {
-                // 这里应该调用 repository 获取真实数据
-                // 例如：repository.getProgressDataForExercise(exercise.id, startDate)
-                // 暂时返回空列表，直到有真实数据
-                emptyList<ChartPoint>()
+                // 获取该时间范围内该动作的所有训练记录
+                val exerciseSets = repository.getExerciseSetsByExerciseAndDateRange(exercise.id, startDate, endDate)
+
+                // 按日期分组，计算每天的最大重量或总容量
+                val dailyProgress = exerciseSets
+                    .groupBy { set ->
+                        // 将时间戳转换为日期（忽略时分秒）
+                        val calendar = Calendar.getInstance()
+                        calendar.time = set.timestamp
+                        calendar.set(Calendar.HOUR_OF_DAY, 0)
+                        calendar.set(Calendar.MINUTE, 0)
+                        calendar.set(Calendar.SECOND, 0)
+                        calendar.set(Calendar.MILLISECOND, 0)
+                        calendar.time
+                    }
+                    .map { (date, sets) ->
+                        // 计算当天的最大重量作为进度指标
+                        val maxWeight = sets.maxOfOrNull { it.weight } ?: 0f
+                        ChartPoint(date, maxWeight)
+                    }
+                    .sortedBy { it.date }
+
+                dailyProgress
             } catch (e: Exception) {
                 emptyList()
             }
@@ -158,7 +178,7 @@ class AnalysisViewModel(private val repository: ExerciseRepository) : ViewModel(
                 )
             }
 
-            // ��时加载容量趋势图
+            // 同时加载容量趋势图
             loadVolumeChartData()
         }
     }
