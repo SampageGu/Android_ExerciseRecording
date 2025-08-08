@@ -181,8 +181,8 @@ fun RepsSelector(
     onRepsChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 次数选项：1-50次
-    val repsOptions = remember { (1..50).toList() }
+    // 次数选项：1-150次
+    val repsOptions = remember { (1..150).toList() }
 
     // 查找当前次数在选项中的索引
     val currentIndex = remember(currentReps, repsOptions) {

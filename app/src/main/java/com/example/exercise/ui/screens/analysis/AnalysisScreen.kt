@@ -242,7 +242,7 @@ fun SimpleLineChart(
     if (data.isEmpty()) return
 
     val maxValue = remember(data) { data.maxByOrNull { it.value }?.value ?: 0f }
-    val minValue = remember(data) { data.minByOrNull { it.value }?.value ?: 0f }
+    val minValue = 0f // 设置Y轴起始点为0
     val dataRange = remember(maxValue, minValue) { max(maxValue - minValue, 1f) }
 
     Box(
@@ -255,7 +255,7 @@ fun SimpleLineChart(
         ) {
             val width = size.width
             val height = size.height
-            val leftPadding = 60f    // 增加左边距，为Y轴标签留空间
+            val leftPadding = 80f    // 增加左边距，为Y轴标签留更多空间
             val bottomPadding = 40f  // 增加底边距，为X轴标签留空间
             val topPadding = 20f     // 顶部边距
             val rightPadding = 20f   // 右边距
@@ -354,11 +354,11 @@ fun SimpleLineChart(
             }
         }
 
-        // 绘制值标签
+        // 绘制值标签 - 调整位置，左移避免遮挡Y轴
         Column(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(end = 4.dp),
+                .padding(end = 16.dp), // 增加右边距，避免遮挡Y轴
             horizontalAlignment = Alignment.End
         ) {
             val step = dataRange / 5
@@ -370,7 +370,7 @@ fun SimpleLineChart(
                 )
             }
             Text(
-                text = String.format("%.1f", minValue),
+                text = String.format("%.1f", minValue), // 显示0作为Y轴起始点
                 style = MaterialTheme.typography.bodySmall
             )
         }
