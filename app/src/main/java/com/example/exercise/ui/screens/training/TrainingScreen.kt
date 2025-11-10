@@ -3,6 +3,7 @@ package com.example.exercise.ui.screens.training
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -47,6 +48,14 @@ fun TrainingScreen() {
     val allExercises by viewModel.allExercises.collectAsStateWithLifecycle(initialValue = emptyList())
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val showPersonalRecordDialog by viewModel.showPersonalRecordDialog.collectAsStateWithLifecycle()
+
+    // 用于控制FAB展开/收起的状态
+    val listState = rememberLazyListState()
+    val expandedFab by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0
+        }
+    }
 
     // 自动创建或加载今天的训练会话
     LaunchedEffect(Unit) {
@@ -191,11 +200,12 @@ fun TrainingScreen() {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showAddExerciseDialog = true }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "添加动作")
-            }
+            ExtendedFloatingActionButton(
+                onClick = { showAddExerciseDialog = true },
+                expanded = expandedFab,
+                icon = { Icon(Icons.Default.Add, contentDescription = "添加动作") },
+                text = { Text("添加动作") }
+            )
         }
     ) { paddingValues ->
         Box(
@@ -208,11 +218,12 @@ fun TrainingScreen() {
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-                // 直接显示训练界面���不需要"开始训练"步骤
+                // 直接显示训练界面，不需要"开始训练"步骤
                 currentSession?.let { session ->
                     ActiveTrainingContent(
                         session = session,
                         exerciseSets = currentExerciseSets,
+                        listState = listState,
                         onDeleteSet = { exerciseSet ->
                             viewModel.deleteExerciseSet(exerciseSet)
                         },
@@ -233,6 +244,7 @@ fun TrainingScreen() {
 private fun ActiveTrainingContent(
     session: TrainingSession,
     exerciseSets: List<ExerciseSetWithDetails>,
+    listState: androidx.compose.foundation.lazy.LazyListState,
     onDeleteSet: (ExerciseSet) -> Unit,
     onFinishTraining: () -> Unit
 ) {
@@ -308,10 +320,12 @@ private fun ActiveTrainingContent(
             val groupedSets = exerciseSets.groupBy { it.exercise.id }
 
             LazyColumn(
+                state = listState,
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(bottom = 80.dp) // 为FAB留出空间
             ) {
-                items(groupedSets.entries.toList()) { (exerciseId, sets) ->
+                items(groupedSets.entries.toList()) { (_, sets) ->
                     GroupedExerciseSetItem(
                         exerciseName = sets.first().exercise.name,
                         exerciseImageUri = null, // 后续可以添加图片支持

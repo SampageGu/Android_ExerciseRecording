@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -281,6 +282,60 @@ fun TrainingDetailDialog(
     sessionWithSets: TrainingSessionWithSets,
     onDismiss: () -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+    // 导出训练记录的函数
+    fun exportTrainingRecord() {
+        val dateFormat = SimpleDateFormat("yyyy年MM月dd日 HH:mm", Locale.getDefault())
+        val dateStr = dateFormat.format(sessionWithSets.session.date)
+
+        val text = buildString {
+            appendLine("📋 训练记录")
+            appendLine("━━━━━━━━━━━━━━━━━━")
+            appendLine("📅 日期: $dateStr")
+
+            if (sessionWithSets.session.name.isNotEmpty()) {
+                appendLine("💪 训练名称: ${sessionWithSets.session.name}")
+            }
+
+            if (sessionWithSets.session.notes.isNotEmpty()) {
+                appendLine("📝 训练笔记: ${sessionWithSets.session.notes}")
+            }
+
+            appendLine()
+            appendLine("━━━━━━━━━━━━━━━━━━")
+            appendLine("🏋️ 训练详情")
+            appendLine("━━━━━━━━━━━━━━━━━━")
+
+            val groupedSets = sessionWithSets.sets.groupBy { it.exercise.id }
+            groupedSets.forEach { (_, sets) ->
+                val exercise = sets.first().exercise
+                appendLine()
+                appendLine("【${exercise.name}】")
+                appendLine("   肌肉群: ${exercise.muscleGroup}")
+
+                sets.sortedBy { it.set.setNumber }.forEach { setWithDetails ->
+                    val recordMark = if (setWithDetails.set.isPersonalRecord) " 🔥PR" else ""
+                    appendLine("   第${setWithDetails.set.setNumber}组: ${setWithDetails.set.weight}kg × ${setWithDetails.set.reps}次$recordMark")
+                }
+            }
+
+            appendLine()
+            appendLine("━━━━━━━━━━━━━━━━━━")
+            appendLine("📊 总计: ${sessionWithSets.sets.size} 组")
+        }
+
+        // 使用系统分享功能
+        val sendIntent = android.content.Intent().apply {
+            action = android.content.Intent.ACTION_SEND
+            putExtra(android.content.Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+
+        val shareIntent = android.content.Intent.createChooser(sendIntent, "分享训练记录")
+        context.startActivity(shareIntent)
+    }
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = MaterialTheme.shapes.medium,
@@ -304,8 +359,13 @@ fun TrainingDetailDialog(
                         fontWeight = FontWeight.Bold
                     )
 
-                    IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "关闭")
+                    Row {
+                        IconButton(onClick = { exportTrainingRecord() }) {
+                            Icon(Icons.Default.Share, contentDescription = "导出")
+                        }
+                        IconButton(onClick = onDismiss) {
+                            Icon(Icons.Default.Close, contentDescription = "关闭")
+                        }
                     }
                 }
 
